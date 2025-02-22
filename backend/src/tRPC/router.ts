@@ -1,26 +1,21 @@
-import { t } from './trpc';
+import { initTRPC } from '@trpc/server';
 import { z } from 'zod';
 
-export const appRouter = t.router({
-  // Example query
-  hello: t.procedure
-    .input(z.object({ name: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.name}`,
-      };
-    }),
+// Initialize tRPC
+const t = initTRPC.create();
 
-  // Example mutation
-  createUser: t.procedure
-    .input(z.object({ email: z.string().email() }))
-    .mutation(({ input }) => {
-      return {
-        success: true,
-        email: input.email,
-      };
+// Create base router and procedure helpers
+export const router = t.router;
+export const publicProcedure = t.procedure;
+
+// Define your router with at least one procedure
+export const appRouter = router({
+  hello: publicProcedure
+    .input(z.string().optional())
+    .query(({ input }) => {
+      return `Hello ${input ?? 'world'}!`;
     }),
 });
 
-// Export type definition of the API
+// Export type router type
 export type AppRouter = typeof appRouter;
