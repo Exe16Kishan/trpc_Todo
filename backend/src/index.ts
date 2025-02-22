@@ -2,10 +2,11 @@ import express, { Request, Response } from 'express';
 import { createContext } from './tRPC/context';
 import { appRouter } from './tRPC/router';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
+import cors from 'cors';
 
 const app = express();
 const port = 3000;
-
+app.use(cors())
 app.use(express.json());
 
 // tRPC middleware
