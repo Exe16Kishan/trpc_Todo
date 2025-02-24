@@ -1,9 +1,9 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { createTRPCClient, httpBatchLink } from '@trpc/client';
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';  // Updated import
 import type { AppRouter } from '../../backend/src/tRPC/router';
 import { TRPCProvider } from './utils/trpc';
+import Todo from "./component/Todo";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -26,42 +26,13 @@ function getQueryClient() {
   }
 }
 
-// Create a simple component to test the tRPC endpoint
-function HelloButton() {
-  const [name, setName] = useState<string | undefined>(undefined);
-  
-  // Use the TanStack React Query hook with tRPC client directly
-  const { data, refetch, isLoading } = useQuery({
-    queryKey: ['hello', name],
-    queryFn: () => 
-      createTRPCClient<AppRouter>({
-        links: [httpBatchLink({ url: 'http://localhost:3000/trpc/' })],
-      }).hello.query(name),
-    enabled: false, // Only run when we manually trigger it
-  });
-
-  const handleClick = () => {
-    setName("User");
-    refetch();
-  };
-
-  return (
-    <div>
-      <button onClick={handleClick} disabled={isLoading}>
-        {isLoading ? 'Loading...' : 'Say Hello'}
-      </button>
-      {data && <p>{data}</p>}
-    </div>
-  );
-}
-
 export function App() {
   const queryClient = getQueryClient();
   const [trpcClient] = useState(() =>
     createTRPCClient<AppRouter>({
       links: [
         httpBatchLink({
-          url: 'http://localhost:3000',
+          url: 'http://localhost:3000/trpc',
         }),
       ],
     }),
@@ -70,8 +41,7 @@ export function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
-        <h1>hii</h1>
-        <HelloButton />
+        <Todo/>
       </TRPCProvider>
     </QueryClientProvider>
   );
