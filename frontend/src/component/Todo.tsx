@@ -7,6 +7,12 @@ export default function Todo() {
   const trpc = useTRPC();
   const {data} =useQuery(trpc.getTodo.queryOptions())
   const addTodo =useMutation(trpc.addTodo.mutationOptions())
+  // const{data} =useQuery({
+  //       queryKey:["todo"],
+  //       queryFn:()=>trpc.getTodo
+
+  // })
+  
   return (
     <div>
       <h2>Todo List</h2>
